@@ -3,6 +3,12 @@
 
 #define VERSION 0.01
 
+#include <string>
+#include <vector>
+#include <map>
+#include <iostream>
+#include <fstream>
+
 using namespace std;
 
 const int SCREEN_HARDCODE_WIDTH 	= 800;
