@@ -1,6 +1,6 @@
 #include "Screen.h"
 
-Screen::Screen()
+Screen::Screen(SDL_Surface *screen, Map map, Player mainPlayer)
 {
 	_screen = screen;
 	_temp = IMG_Load("data/tiles/29.png"); //TODO remove after static test
@@ -40,11 +40,14 @@ void Screen::DrawIMG(SDL_Surface *img, int x, int y, int width, int height, int 
 
 void Screen::DrawBackground()
 {
+	//Fill the background solid black
 	SDL_FillRect(_screen, NULL, 0xFFFFFF);
 }
 
 void Screen::DrawMap()
 {
+	Coords playerPosition = _mainPlayer->GetPosition();
+
 	
 }
 

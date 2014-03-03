@@ -10,7 +10,7 @@
 class Screen
 {
 	public:
-	Screen(int x, int y, int bpp); //width, height, depth
+	Screen(SDL_Surface *screen, Map map, Player mainPlayer);
 	~Screen();
 
 	void DrawIMG(SDL_Surface *img, int x, int y); //blit all

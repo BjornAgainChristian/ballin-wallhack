@@ -11,8 +11,8 @@
 
 using namespace std;
 
-const int SCREEN_HARDCODE_WIDTH 	= 800;
-const int SCREEN_HARDCODE_HEIGHT 	= 600;
+const int SCREEN_HARDCODE_WIDTH 	= 1024;
+const int SCREEN_HARDCODE_HEIGHT 	= 768;
 const int SCREEN_HARDCODE_BPP		= 32;
 
 const int FRAMES_PER_SECOND		= 30;
@@ -20,8 +20,8 @@ const int FRAMES_PER_SECOND		= 30;
 const int TILE_WIDTH			= 32;
 const int TILE_HEIGHT			= 32;
 
-const int X_HARDCODE_TILES_VIEWED	= 25;
-const int Y_HARDCODE_TILES_VIEWED	= 18; //(actually 18.75 but whatever)
+const int X_HARDCODE_TILES_VIEWED	= 32;
+const int Y_HARDCODE_TILES_VIEWED	= 24; //(actually 18.75 but whatever)
 
 enum {
 	NONE = 0,

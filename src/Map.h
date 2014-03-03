@@ -49,6 +49,9 @@ class Map
 	void SetPlayer(int x, int y, Player* player);
 	void MovePlayer(int x, int y, Player* player);
 
+	int GetWidth();
+	int GetHeight();
+
 	protected:
 
 	string Name;

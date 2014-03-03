@@ -13,7 +13,7 @@ void Player::SetPosition(int x, int y)
 	this->Position["y"] = y;
 }
 
-void Player::GetPosition()
+Coords Player::GetPosition()
 {
 	return this->Position;
 }

@@ -228,3 +228,13 @@ void MovePlayer(int x, int y, Player* player)
 	this->_players[x][y] = player;
 	player->SetPosition(x, y);
 }
+
+int Map::GetWidth()
+{
+	return this->_width;
+}
+
+int Map::GetHeight()
+{
+	return this->_height;
+}
