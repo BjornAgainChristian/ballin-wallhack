@@ -2,20 +2,30 @@
 
 Map::Map(string file)
 {
-	string map, obj = file;
+	string map, obj, tile;
+	map = obj = tile = file;
 
 	Name = file; //for displaying on screen (probably)
 
 	map += ".map";
 	obj += ".obj";
+	tile += ".tile";
 
 	this->LoadMap(map);
 	this->LoadObj(obj);
+	this->LoadTiles(tile);
 }
 
 Map::~Map()
 {
-	
+	//free all SDL surfaces for clean shutdown
+	for (int i; i < _tiles.size(); i++)
+	{
+		SDL_FreeSurface(_tiles[i]);
+	}
+
+	//now delete the vector for good measure
+	_tiles.clear();
 }
 
 void Map::LoadMap(string file)
@@ -42,13 +52,14 @@ void Map::LoadMap(string file)
 	int temp, loop, x, y, pos; //pos is for array size, pushing to last element
 	
 	Walkable walkable; //populating walkable map
+	MapTile empty; //for push_back() prior to changes
 
 	Input >> this->_width;
 	Input >> this->_height; //read in w/h first, then onto each element
 
 	while (true)
 	{
-		this->_map.push_back();
+		this->_map.push_back(empty);
 		pos = (int)this->_map.size() - 1;
 		
 		Input >> this->_map[pos].Anim;
@@ -60,7 +71,7 @@ void Map::LoadMap(string file)
 		y = this->_map[pos].coords["y"];
 		
 		//now read in the tiles for anim
-		for (loop = 0; loop <= Anim; loop++)
+		for (loop = 0; loop <= this->_map[pos].Anim; loop++)
 		{
 			Input >> temp;
 			this->_map[pos].Tiles.push_back(temp);
@@ -93,14 +104,12 @@ void Map::LoadMap(string file)
 
 		//new walkable populated, set internal x,y walkable
 		this->SetWalkable(x, y, walkable);
-		//cleanup for next loop
-		walkable.clear();
 
 		//Input exit; >0 = exit number; 0 = not an exit
 		Input >> this->_map[pos].Exit;
 
 		//end of file, then break; end of map loader
-		if (Input.eof) {
+		if (Input.eof()) {
 			break;
 		}
 	}
@@ -128,10 +137,11 @@ void Map::LoadObj(string file)
 	Input.open(file.c_str());
 
 	int temp, loop, pos;
+	MapObj empty; //for push_back()
 
 	while (true)
 	{
-		this->_obj.push_back();
+		this->_obj.push_back(empty);
 		pos = (int)this->_obj.size() - 1;
 
 		Input >> this->_obj[pos].Anim;
@@ -140,7 +150,7 @@ void Map::LoadObj(string file)
 		Input >> this->_obj[pos].coords["y"];
 
 		//load animation frames
-		for (loop = 0; loop <= Anim; loop++)
+		for (loop = 0; loop <= this->_obj[pos].Anim; loop++)
 		{
 			Input >> temp;
 			this->_obj[pos].Frames.push_back(temp);
@@ -148,7 +158,7 @@ void Map::LoadObj(string file)
 
 		//is object collidable? 1 = true, 0 = false
 		Input >> temp;
-		this->_obj[pos].collidable = (temp > 0 ? true : false);
+		this->_obj[pos].Collidable = (temp > 0 ? true : false);
 
 		Input >> this->_obj[pos].Item;
 		Input >> this->_obj[pos].Interactive;
@@ -168,9 +178,33 @@ void Map::LoadObj(string file)
 	Input.close();
 }
 
-bool Map::SetWalkable(int x, int y, Walkable, walkable)
+void Map::LoadTiles(string file)
 {
-	this _walkability[x][y] = walkable;
+	ifstream Input;
+	Input.open(file.c_str());
+	string temp;
+
+	SDL_Surface* tempsdl;
+
+	for (int i = 0;;i++) //loop forever and update i
+	{
+		Input >> temp;
+
+		tempsdl = IMG_Load(temp.c_str());
+		this->_tiles.push_back(tempsdl);
+
+		if (Input.eof())
+		{
+			break;
+		}
+	}
+
+	Input.close();
+}
+
+void Map::SetWalkable(int x, int y, Walkable walkable)
+{
+	this->_walkable[x][y] = walkable;
 }
 
 bool Map::IsWalkable(int x, int y)
@@ -214,14 +248,14 @@ void Map::SetPlayer(int x, int y, Player* player)
 	_players[x][y] = player;
 }
 
-void MovePlayer(int x, int y, Player* player)
+void Map::MovePlayer(int x, int y, Player* player)
 {
 	if ((x < 0) || (y < 0) || (x > this->_width) || (y > this->_height))
 	{
 		//TODO: throw error code here; outside out map boundary
 	}
 
-	Coord coords = player->GetPosition();
+	Coords coords = player->GetPosition();
 	//erase from old coord before moving
 	this->_players[coords["x"]].erase(coords["y"]);
 
@@ -237,4 +271,19 @@ int Map::GetWidth()
 int Map::GetHeight()
 {
 	return this->_height;
+}
+
+vector<MapTile> Map::GetMapTile()
+{
+	return this->_map;
+}
+
+vector<MapObj> Map::GetMapObj()
+{
+	return this->_obj;
+}
+
+vector<SDL_Surface*> Map::GetSDLTiles()
+{
+	return this->_tiles;
 }

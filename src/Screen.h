@@ -2,6 +2,7 @@
 #define _SCREEN_H_
 
 #include <SDL/SDL.h>
+#include <vector>
 
 #include "Globals.h"
 #include "Map.h"

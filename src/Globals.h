@@ -21,7 +21,7 @@ const int TILE_WIDTH			= 32;
 const int TILE_HEIGHT			= 32;
 
 const int X_HARDCODE_TILES_VIEWED	= 32;
-const int Y_HARDCODE_TILES_VIEWED	= 24; //(actually 18.75 but whatever)
+const int Y_HARDCODE_TILES_VIEWED	= 24;
 
 enum {
 	NONE = 0,

@@ -5,7 +5,11 @@
 #include <fstream>
 #include <vector>
 
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+
 #include "Globals.h"
+#include "Player.h"
 
 typedef struct { //to test if the tile itself and surrounding can be walked on
 	bool self;
@@ -41,6 +45,7 @@ class Map
 
 	void LoadMap(string file);
 	void LoadObj(string file);
+	void LoadTiles(string file);
 
 	void SetWalkable(int x, int y, Walkable walkable);
 	bool IsWalkable(int x, int y);
@@ -51,6 +56,10 @@ class Map
 
 	int GetWidth();
 	int GetHeight();
+
+	vector<MapTile> GetMapTile();
+	vector<MapObj> GetMapObj();
+	vector<SDL_Surface*> GetSDLTiles();
 
 	protected:
 
@@ -63,6 +72,8 @@ class Map
 	map<int, map<int, Player*> > _players; //player locations
 	vector<MapTile> _map; //map information
 	vector<MapObj> _obj; //objects/sprites 
+
+	vector<SDL_Surface*> _tiles; //tile img information for rendering
 };
 
 #endif
