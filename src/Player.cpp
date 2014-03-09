@@ -7,6 +7,11 @@ Player::Player(string name)
 	this->Name = name;
 }
 
+Player::~Player()
+{
+	
+}
+
 void Player::SetPosition(int x, int y)
 {
 	this->Position["x"] = x;

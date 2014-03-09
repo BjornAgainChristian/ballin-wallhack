@@ -9,5 +9,5 @@ all: $(MAIN)
 .PHONY: clean cleanall
 
 clean:
-	find . | egrep '(\.o|\.so)$\' | xargs rm
+	find src/ | egrep '(\.o|\.so)$\' | xargs rm
 	rm client

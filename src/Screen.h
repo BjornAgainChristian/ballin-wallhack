@@ -25,9 +25,11 @@ class Screen
 
 	void HandleKeys();
 
+	void TestLoop();
+
 	protected:
 
-	SDL_Surface* _screen;
+	SDL_Surface* _screen; //main screen
 	SDL_Surface* _temp; //TODO remove after testing static, prior to anim
 
 	Map* _map;

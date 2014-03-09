@@ -41,6 +41,7 @@ class Map
 {
 	public:
 	Map(string file);
+	Map(); //for testing only
 	~Map();
 
 	void LoadMap(string file);

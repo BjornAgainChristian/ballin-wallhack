@@ -32,5 +32,27 @@ enum {
 };
 
 typedef map<string, int> Coords; //used for player coords
+/*
+class Logger
+{
+	public:
+		Logger()
+		{
+			Output.open("Logger.log");
+		}
+		~Logger()
+		{
+			Output.close();
+		}
+		void Log(string words)
+		{
+			Output << words << endl;
+		}
+
+	private:
+		ofstream Output;
+};
+
+Logger logger; */
 
 #endif

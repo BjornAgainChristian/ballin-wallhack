@@ -8,12 +8,17 @@ Map::Map(string file)
 	Name = file; //for displaying on screen (probably)
 
 	map += ".map";
-	obj += ".obj";
+//	obj += ".obj"; COMMENTED OUT FOR TESTING ONLY
 	tile += ".tile";
 
 	this->LoadMap(map);
 	this->LoadObj(obj);
 	this->LoadTiles(tile);
+}
+
+Map::Map()
+{
+	//TESTING ONLY
 }
 
 Map::~Map()
@@ -56,7 +61,7 @@ void Map::LoadMap(string file)
 
 	Input >> this->_width;
 	Input >> this->_height; //read in w/h first, then onto each element
-
+	cout << _width << endl;
 	while (true)
 	{
 		this->_map.push_back(empty);
@@ -113,7 +118,6 @@ void Map::LoadMap(string file)
 			break;
 		}
 	}
-
 	Input.close();
 }
 

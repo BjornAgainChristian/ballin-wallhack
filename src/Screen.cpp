@@ -7,11 +7,19 @@ Screen::Screen(SDL_Surface *screen, Map map, Player mainPlayer)
 
 	_map = &map;
 	_mainPlayer = &mainPlayer;
+
+	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_TIMER|SDL_HWSURFACE|SDL_DOUBLEBUF) < 0)
+	{
+		cerr << "Unable to init SDL: " << SDL_GetError() << endl;
+	}
+
+	TestLoop();
 }
 
 Screen::~Screen()
 {
-
+	SDL_FreeSurface(_screen);
+	SDL_Quit();
 }
 
 void Screen::DrawIMG(SDL_Surface *img, int x, int y)
@@ -119,4 +127,10 @@ void Screen::HandleKeys()
 	Uint8* keys;
 	keys = SDL_GetKeyState(NULL);
 	Coords PlayerPos = _mainPlayer->GetPosition();
+}
+
+void Screen::TestLoop()
+{
+	DrawScene();
+	SDL_Delay(1000);
 }
