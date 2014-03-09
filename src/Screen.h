@@ -8,10 +8,14 @@
 #include "Map.h"
 #include "Player.h"
 
+typedef struct {
+	int x, y;
+} Camera;
+
 class Screen
 {
 	public:
-	Screen(SDL_Surface *screen, Map map, Player mainPlayer);
+	Screen(Map map, Player mainPlayer);
 	~Screen();
 
 	void DrawIMG(SDL_Surface *img, int x, int y); //blit all
@@ -29,11 +33,15 @@ class Screen
 
 	protected:
 
+	bool Quit;
+
 	SDL_Surface* _screen; //main screen
 	SDL_Surface* _temp; //TODO remove after testing static, prior to anim
 
 	Map* _map;
 	Player* _mainPlayer;
+
+	Camera camera;
 };
 
 #endif

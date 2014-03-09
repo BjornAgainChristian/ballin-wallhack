@@ -1,19 +1,28 @@
 #include "Screen.h"
 
-Screen::Screen(SDL_Surface *screen, Map map, Player mainPlayer)
+Screen::Screen(Map map, Player mainPlayer)
 {
-	_screen = screen;
 	_temp = IMG_Load("data/tiles/29.png"); //TODO remove after static test
 
 	_map = &map;
 	_mainPlayer = &mainPlayer;
 
-	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_TIMER|SDL_HWSURFACE|SDL_DOUBLEBUF) < 0)
+	Quit = false;
+	camera.x = SCREEN_HARDCODE_WIDTH / 2;
+	camera.y = SCREEN_HARDCODE_HEIGHT / 2;
+
+	//if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_TIMER|SDL_HWSURFACE|SDL_DOUBLEBUF) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO|SDL_HWSURFACE|SDL_DOUBLEBUF))
 	{
 		cerr << "Unable to init SDL: " << SDL_GetError() << endl;
 	}
 
-	TestLoop();
+	_screen = SDL_SetVideoMode(SCREEN_HARDCODE_WIDTH, SCREEN_HARDCODE_HEIGHT, SCREEN_HARDCODE_BPP, SDL_NOFRAME);
+
+	while (!Quit)
+	{
+		TestLoop();
+	}
 }
 
 Screen::~Screen()
@@ -49,7 +58,7 @@ void Screen::DrawIMG(SDL_Surface *img, int x, int y, int width, int height, int 
 void Screen::DrawBackground()
 {
 	//Fill the background solid black
-	SDL_FillRect(_screen, NULL, 0xFFFFFF);
+	SDL_FillRect(_screen, NULL, 0x000000);
 }
 
 void Screen::DrawMap()
@@ -65,7 +74,7 @@ void Screen::DrawMap()
 
 	//for rendering tiles to the left and top of where the player is located
 	//the +1 /2 on these ensures tiles are rendered 1 past the boarders for clipped tiles
-	x_start = PlayerPos["x"] - ((SCREEN_HARDCODE_WIDTH / 2) - TILE_WIDTH);
+	x_start = PlayerPos["x"] - ((SCREEN_HARDCODE_WIDTH / 2) + TILE_WIDTH);
 	if (x_start < 0)
 	{
 		x_start = 0;
@@ -75,7 +84,7 @@ void Screen::DrawMap()
 		x_start -= (x_start + SCREEN_HARDCODE_WIDTH - _map->GetWidth());
 	}
 
-	y_start = PlayerPos["y"] - ((SCREEN_HARDCODE_HEIGHT / 2) - TILE_HEIGHT);
+	y_start = PlayerPos["y"] - ((SCREEN_HARDCODE_HEIGHT / 2) + TILE_HEIGHT);
 	if (y_start < 0)
 	{
 		y_start = 0;
@@ -86,26 +95,33 @@ void Screen::DrawMap()
 	}
 
 	//trimming player location to draw tiles in correct offset
-	if (PlayerPos["x"] > SCREEN_HARDCODE_WIDTH)
+	if (PlayerPos["x"] > SCREEN_HARDCODE_WIDTH / 2)
 	{
-		x_trim = PlayerPos["x"] - SCREEN_HARDCODE_WIDTH;
+		x_trim = PlayerPos["x"] - SCREEN_HARDCODE_WIDTH / 2;
 	}
-	if (PlayerPos["y"] > SCREEN_HARDCODE_HEIGHT)
+	if (PlayerPos["y"] > SCREEN_HARDCODE_HEIGHT / 2)
 	{
-		y_trim = PlayerPos["y"] - SCREEN_HARDCODE_HEIGHT;
+		y_trim = PlayerPos["y"] - SCREEN_HARDCODE_HEIGHT / 2;
 	}
-	
+/*cout << "Enter render loop. x_start/trim: " << x_start << " " << x_trim << endl << " y_start/trim: " << y_start << " " << y_trim << endl;
+cout << "Tiles size: " << tiles.size() << endl;
+cout << "Render targets: " << tiles_render.size() << endl;
+cout << "Player position: " << PlayerPos["x"] << " " << PlayerPos["y"] << endl;*/
 	//loop through tiles and find the ones matching the coords x/y and render
-	for (int i; i < tiles.size(); i++)
-	{
-		if ((tiles[i].coords["x"] >= x_start) && (tiles[i].coords["x"] <= x_start + SCREEN_HARDCODE_WIDTH))
+	for (int i = 0; i < tiles.size(); i++)
+	{ 	
+		if ((tiles[i].coords["x"] >= x_start) && (tiles[i].coords["x"] <= x_start + SCREEN_HARDCODE_WIDTH + TILE_WIDTH))
 		{
-			if ((tiles[i].coords["y"] >= y_start) && (tiles[i].coords["y"] <= y_start + SCREEN_HARDCODE_HEIGHT))
-			{
-
+			if ((tiles[i].coords["y"] >= y_start) && (tiles[i].coords["y"] <= y_start + SCREEN_HARDCODE_HEIGHT + TILE_HEIGHT))
+			{ 
+				render = tiles_render[tiles[i].Tiles[0]];
+				DrawIMG(render, tiles[i].coords["x"] - x_trim, tiles[i].coords["y"] - y_trim);
 			}
-		}
+		} 
 	}
+
+	//draw test sprite location
+	DrawIMG(_temp, PlayerPos["x"] - x_trim, PlayerPos["y"] - y_trim);
 }
 
 void Screen::DrawSprites()
@@ -127,10 +143,43 @@ void Screen::HandleKeys()
 	Uint8* keys;
 	keys = SDL_GetKeyState(NULL);
 	Coords PlayerPos = _mainPlayer->GetPosition();
+
+	SDL_Event event;
+	while (SDL_PollEvent(&event))
+	{
+		if (event.type == SDL_QUIT)
+		{
+			Quit = true;
+		} 
+	} 
+
+	if (keys[SDLK_ESCAPE])	
+	{
+		Quit = true;
+	}
+
+	if (keys[SDLK_w])
+	{
+		_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"] - 12);
+	} 
+	if (keys[SDLK_s])
+	{
+		_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"] + 12);
+	}
+	if (keys[SDLK_a])
+	{
+		_mainPlayer->SetPosition(PlayerPos["x"] - 12, PlayerPos["y"]);
+	} 
+	if (keys[SDLK_d])
+	{
+		_mainPlayer->SetPosition(PlayerPos["x"] + 12, PlayerPos["y"]);
+	}
 }
 
 void Screen::TestLoop()
 {
+	//system("clear");
 	DrawScene();
-	SDL_Delay(1000);
+	HandleKeys();
+	SDL_Delay(33);
 }

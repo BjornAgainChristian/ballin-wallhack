@@ -3,8 +3,11 @@ MAIN = 	src/Main.o\
 	src/Player.o\
 	src/Screen.o
 
-all: $(MAIN)
+UTILS = src/utils/genmap_test.o
+
+all: $(MAIN) $(UTILS)
 	g++ -o client $(MAIN) -lSDL -lSDL_image -lSDL_mixer
+	g++ -o src/utils/Generate_Test_Map $(UTILS)
 
 .PHONY: clean cleanall
 

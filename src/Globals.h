@@ -11,8 +11,8 @@
 
 using namespace std;
 
-const int SCREEN_HARDCODE_WIDTH 	= 1024;
-const int SCREEN_HARDCODE_HEIGHT 	= 768;
+const int SCREEN_HARDCODE_WIDTH 	= 800;
+const int SCREEN_HARDCODE_HEIGHT 	= 600;
 const int SCREEN_HARDCODE_BPP		= 32;
 
 const int FRAMES_PER_SECOND		= 30;

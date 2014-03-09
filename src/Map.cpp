@@ -12,7 +12,7 @@ Map::Map(string file)
 	tile += ".tile";
 
 	this->LoadMap(map);
-	this->LoadObj(obj);
+//	this->LoadObj(obj);  COMMENTED OUT FOR TESTING
 	this->LoadTiles(tile);
 }
 
@@ -54,15 +54,18 @@ void Map::LoadMap(string file)
 	ifstream Input;
 	Input.open(file.c_str());
 
-	int temp, loop, x, y, pos; //pos is for array size, pushing to last element
+	int total, temp, loop, x, y, pos; //pos is for array size, pushing to last element
 	
 	Walkable walkable; //populating walkable map
 	MapTile empty; //for push_back() prior to changes
 
 	Input >> this->_width;
 	Input >> this->_height; //read in w/h first, then onto each element
-	cout << _width << endl;
-	while (true)
+
+	total = ((_width / TILE_WIDTH) * (_height / TILE_HEIGHT));
+	cout << "Map: Total tiles: " << total << endl;
+
+	for (int i = 1; i <= total; i++)
 	{
 		this->_map.push_back(empty);
 		pos = (int)this->_map.size() - 1;
@@ -113,10 +116,6 @@ void Map::LoadMap(string file)
 		//Input exit; >0 = exit number; 0 = not an exit
 		Input >> this->_map[pos].Exit;
 
-		//end of file, then break; end of map loader
-		if (Input.eof()) {
-			break;
-		}
 	}
 	Input.close();
 }
@@ -189,18 +188,19 @@ void Map::LoadTiles(string file)
 	string temp;
 
 	SDL_Surface* tempsdl;
+	int amount;
 
-	for (int i = 0;;i++) //loop forever and update i
+	Input >> amount;
+
+	for (int i = 1; i <= amount;i++)
 	{
 		Input >> temp;
 
 		tempsdl = IMG_Load(temp.c_str());
 		this->_tiles.push_back(tempsdl);
 
-		if (Input.eof())
-		{
-			break;
-		}
+		cout << "Tile: " << temp << " loaded." << endl;
+
 	}
 
 	Input.close();

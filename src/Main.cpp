@@ -18,18 +18,10 @@ int main(int argc, char *argv[])
 
 	Map map("data/maps/Test");
 	//Map map; //TESTING ONLY
-
 	cout << "Map loaded" << endl;
 
-	Screen* screen = new Screen(SDL_SetVideoMode(SCREEN_HARDCODE_WIDTH, 
-									SCREEN_HARDCODE_HEIGHT, 
-									SCREEN_HARDCODE_BPP, SDL_NOFRAME),
-									map,
-									player);
+	Screen* screen = new Screen(map, player);
 
 
-	while (true) {
-		//test
-	}
 	return 0;
 }
