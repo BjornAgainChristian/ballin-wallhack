@@ -105,10 +105,7 @@ void Screen::DrawMap()
 	{
 		y_trim = PlayerPos["y"] - SCREEN_HARDCODE_HEIGHT / 2;
 	}
-/*cout << "Enter render loop. x_start/trim: " << x_start << " " << x_trim << endl << " y_start/trim: " << y_start << " " << y_trim << endl;
-cout << "Tiles size: " << tiles.size() << endl;
-cout << "Render targets: " << tiles_render.size() << endl;
-cout << "Player position: " << PlayerPos["x"] << " " << PlayerPos["y"] << endl;*/
+
 	//loop through tiles and find the ones matching the coords x/y and render
 	for (int i = 0; i < tiles.size(); i++)
 	{ 	
@@ -166,8 +163,6 @@ void Screen::HandleKeys()
 		tileY = PlayerPos["y"];
 	}
 
-	cout << "Tile X/Y: " << tileX / 32 << " " << tileY / 32 << endl;
-
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -214,7 +209,6 @@ void Screen::HandleKeys()
 
 void Screen::TestLoop()
 {
-	//system("clear");
 	DrawScene();
 	HandleKeys();
 	SDL_Delay(33);
