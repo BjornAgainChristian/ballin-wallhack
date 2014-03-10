@@ -5,8 +5,10 @@ MAIN = 	src/Main.o\
 
 UTILS = src/utils/genmap_test.o
 
-all: $(MAIN) $(UTILS)
-	g++ -o client $(MAIN) -lSDL -lSDL_image -lSDL_mixer
+all: $(MAIN)
+	g++ -o client $(MAIN) -Wall -O2 -lSDL -lSDL_image -lSDL_mixer
+
+utils: $(UTILS)
 	g++ -o src/utils/Generate_Test_Map $(UTILS)
 
 .PHONY: clean cleanall

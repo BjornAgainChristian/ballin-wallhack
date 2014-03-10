@@ -19,6 +19,8 @@ Screen::Screen(Map map, Player mainPlayer)
 
 	_screen = SDL_SetVideoMode(SCREEN_HARDCODE_WIDTH, SCREEN_HARDCODE_HEIGHT, SCREEN_HARDCODE_BPP, SDL_NOFRAME);
 
+	cout << "Renderer started, entering loop." << endl;
+
 	while (!Quit)
 	{
 		TestLoop();
@@ -143,6 +145,28 @@ void Screen::HandleKeys()
 	Uint8* keys;
 	keys = SDL_GetKeyState(NULL);
 	Coords PlayerPos = _mainPlayer->GetPosition();
+	int tileX, tileY; //for finding nearest tile for colliding
+
+	//if not divisble by 32, subtract remainder to find nearest tile to the left/top
+	tileX = PlayerPos["x"] % TILE_WIDTH;
+	tileY = PlayerPos["y"] % TILE_HEIGHT;
+	if (tileX > 0)
+	{
+		tileX = PlayerPos["x"] - tileX;
+	}
+	else {
+		tileX = PlayerPos["x"];
+	}
+
+	if (tileY > 0)
+	{
+		tileY = PlayerPos["y"] - tileY;
+	}
+	else {
+		tileY = PlayerPos["y"];
+	}
+
+	cout << "Tile X/Y: " << tileX / 32 << " " << tileY / 32 << endl;
 
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
@@ -160,19 +184,31 @@ void Screen::HandleKeys()
 
 	if (keys[SDLK_w])
 	{
-		_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"] - 12);
+		if (_map->IsWalkable(tileX, tileY, "up"))
+		{
+			_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"] - 12);			
+		}
 	} 
 	if (keys[SDLK_s])
 	{
-		_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"] + 12);
+		if (_map->IsWalkable(tileX, tileY, "down"))
+		{
+			_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"] + 12);
+		}
 	}
 	if (keys[SDLK_a])
 	{
-		_mainPlayer->SetPosition(PlayerPos["x"] - 12, PlayerPos["y"]);
+		if (_map->IsWalkable(tileX, tileY, "left"))
+		{
+			_mainPlayer->SetPosition(PlayerPos["x"] - 12, PlayerPos["y"]);
+		}
 	} 
 	if (keys[SDLK_d])
 	{
-		_mainPlayer->SetPosition(PlayerPos["x"] + 12, PlayerPos["y"]);
+		if (_map->IsWalkable(tileX, tileY, "right"))
+		{
+			_mainPlayer->SetPosition(PlayerPos["x"] + 12, PlayerPos["y"]);
+		}
 	}
 }
 
