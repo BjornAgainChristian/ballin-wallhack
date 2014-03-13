@@ -143,8 +143,6 @@ void Screen::HandleKeys()
 	Coords PlayerPos = _mainPlayer->GetPosition();
 	int tileX, tileY; //for finding nearest tile for colliding
 
-
-
 	//if not divisble by 32, subtract remainder to find nearest tile to the left/top
 	tileX = PlayerPos["x"] % TILE_WIDTH;
 	tileY = PlayerPos["y"] % TILE_HEIGHT;
@@ -159,7 +157,6 @@ void Screen::HandleKeys()
 	else {
 		tileX = PlayerPos["x"];
 	}
-
 
 	if ((tileY > 0) && (PlayerPos["y"] < TILE_HEIGHT))
 	{
@@ -180,8 +177,6 @@ void Screen::HandleKeys()
 		{
 			Quit = true;
 		} 
-		cout << "Player position: " << PlayerPos["x"] << " " << PlayerPos["y"] << endl;
-		cout << "TileX/Y: " << tileX << " " << tileY << endl;
 	} 
 
 	if (keys[SDLK_ESCAPE])	
