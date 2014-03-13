@@ -8,9 +8,6 @@
 #include "Map.h"
 #include "Player.h"
 
-typedef struct {
-	int x, y;
-} Camera;
 
 class Screen
 {
@@ -41,7 +38,6 @@ class Screen
 	Map* _map;
 	Player* _mainPlayer;
 
-	Camera camera;
 };
 
 #endif

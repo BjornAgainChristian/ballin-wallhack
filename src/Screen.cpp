@@ -2,14 +2,13 @@
 
 Screen::Screen(Map map, Player mainPlayer)
 {
-	_temp = IMG_Load("data/tiles/29.png"); //TODO remove after static test
+//	_temp = IMG_Load("data/tiles/29.png"); //TODO remove after static test
+	_temp = IMG_Load("data/player_Male/0.png");
 
 	_map = &map;
 	_mainPlayer = &mainPlayer;
 
 	Quit = false;
-	camera.x = SCREEN_HARDCODE_WIDTH / 2;
-	camera.y = SCREEN_HARDCODE_HEIGHT / 2;
 
 	//if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_TIMER|SDL_HWSURFACE|SDL_DOUBLEBUF) < 0)
 	if (SDL_Init(SDL_INIT_VIDEO|SDL_HWSURFACE|SDL_DOUBLEBUF))
@@ -144,10 +143,16 @@ void Screen::HandleKeys()
 	Coords PlayerPos = _mainPlayer->GetPosition();
 	int tileX, tileY; //for finding nearest tile for colliding
 
+
+
 	//if not divisble by 32, subtract remainder to find nearest tile to the left/top
 	tileX = PlayerPos["x"] % TILE_WIDTH;
 	tileY = PlayerPos["y"] % TILE_HEIGHT;
-	if (tileX > 0)
+	if ((tileX > 0) && (PlayerPos["x"] < TILE_WIDTH))
+	{
+		tileX = TILE_WIDTH;
+	}
+	else if (tileX > 0)
 	{
 		tileX = PlayerPos["x"] - tileX;
 	}
@@ -155,7 +160,12 @@ void Screen::HandleKeys()
 		tileX = PlayerPos["x"];
 	}
 
-	if (tileY > 0)
+
+	if ((tileY > 0) && (PlayerPos["y"] < TILE_HEIGHT))
+	{
+		tileY = TILE_HEIGHT;
+	}
+	else if (tileY > 0)
 	{
 		tileY = PlayerPos["y"] - tileY;
 	}
@@ -170,41 +180,62 @@ void Screen::HandleKeys()
 		{
 			Quit = true;
 		} 
+		cout << "Player position: " << PlayerPos["x"] << " " << PlayerPos["y"] << endl;
+		cout << "TileX/Y: " << tileX << " " << tileY << endl;
 	} 
 
 	if (keys[SDLK_ESCAPE])	
 	{
 		Quit = true;
 	}
-
-	if (keys[SDLK_w])
+	if (keys[SDLK_UP])
 	{
 		if (_map->IsWalkable(tileX, tileY, "up"))
 		{
 			_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"] - 12);			
 		}
 	} 
-	if (keys[SDLK_s])
+	if (keys[SDLK_DOWN])
 	{
 		if (_map->IsWalkable(tileX, tileY, "down"))
 		{
 			_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"] + 12);
 		}
 	}
-	if (keys[SDLK_a])
+	if (keys[SDLK_LEFT])
 	{
 		if (_map->IsWalkable(tileX, tileY, "left"))
 		{
 			_mainPlayer->SetPosition(PlayerPos["x"] - 12, PlayerPos["y"]);
 		}
 	} 
-	if (keys[SDLK_d])
+	if (keys[SDLK_RIGHT])
 	{
 		if (_map->IsWalkable(tileX, tileY, "right"))
 		{
 			_mainPlayer->SetPosition(PlayerPos["x"] + 12, PlayerPos["y"]);
 		}
 	}
+
+	PlayerPos = _mainPlayer->GetPosition();
+	//change bounds
+	if (PlayerPos["x"] < 0)
+	{
+		PlayerPos["x"] = 0;
+	}
+	if (PlayerPos["x"] > _map->GetWidth())
+	{
+		PlayerPos["x"] = _map->GetWidth();
+	}
+	if (PlayerPos["y"] < 0)
+	{
+		PlayerPos["y"] = 0;
+	}
+	if (PlayerPos["y"] > _map->GetWidth())
+	{
+		PlayerPos["y"] = _map->GetWidth();
+	}
+	_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"]);
 }
 
 void Screen::TestLoop()
