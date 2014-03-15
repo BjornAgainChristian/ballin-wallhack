@@ -2,8 +2,8 @@
 
 Screen::Screen(Map map, Player mainPlayer)
 {
-//	_temp = IMG_Load("data/tiles/29.png"); //TODO remove after static test
-	_temp = IMG_Load("data/player_Male/0.png");
+	_temp = IMG_Load("data/tiles/29.png"); //TODO remove after static test
+//	_temp = IMG_Load("data/player_Male/0.png");
 
 	_map = &map;
 	_mainPlayer = &mainPlayer;
@@ -168,7 +168,7 @@ void Screen::HandleKeys()
 	}
 	else {
 		tileY = PlayerPos["y"];
-	}
+	} 
 
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
