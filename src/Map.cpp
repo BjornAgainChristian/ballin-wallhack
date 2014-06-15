@@ -8,17 +8,12 @@ Map::Map(string file)
 	Name = file; //for displaying on screen (probably)
 
 	map += ".map";
-//	obj += ".obj"; COMMENTED OUT FOR TESTING ONLY
+	obj += ".obj";
 	tile += ".tile";
 
 	this->LoadMap(map);
-//	this->LoadObj(obj);  COMMENTED OUT FOR TESTING
+	this->LoadObj(obj);
 	this->LoadTiles(tile);
-}
-
-Map::Map()
-{
-	//TESTING ONLY
 }
 
 Map::~Map()
@@ -56,7 +51,6 @@ void Map::LoadMap(string file)
 
 	int total, temp, loop, x, y, pos; //pos is for array size, pushing to last element
 	
-	Walkable walkable; //populating walkable map
 	MapTile empty; //for push_back() prior to changes
 
 	Input >> this->_width;
@@ -85,34 +79,6 @@ void Map::LoadMap(string file)
 			this->_map[pos].Tiles.push_back(temp);
 		}
 
-		//now to populate the walkable map
-		for (loop = 1; loop <= 5; loop++)
-		{
-			Input >> temp;
-			switch(loop)
-			{
-				//set true/false based on 1/0 from file
-				case 1: //self
-					walkable.self = (temp > 0 ? true : false);
-					break;
-				case 2: //north
-					walkable.up = (temp > 0 ? true : false);
-					break;
-				case 3: //south
-					walkable.down = (temp > 0 ? true : false);
-					break;
-				case 4: //west
-					walkable.left = (temp > 0 ? true : false);
-					break;
-				case 5: //east
-					walkable.right = (temp > 0 ? true : false);
-					break;
-			}
-		}
-
-		//new walkable populated, set internal x,y walkable
-		this->SetWalkable(x, y, walkable);
-
 		//Input exit; >0 = exit number; 0 = not an exit
 		Input >> this->_map[pos].Exit;
 
@@ -123,7 +89,9 @@ void Map::LoadMap(string file)
 void Map::LoadObj(string file)
 {
 	/* OBJ STRUCTURE
-	
+	# of Objects
+
+	@PER OBJECT:
 	Animation flag (0 = no anim; >0 = animation frame count)
 	X map position
 	Y map position
@@ -139,10 +107,12 @@ void Map::LoadObj(string file)
 	ifstream Input;
 	Input.open(file.c_str());
 
-	int temp, loop, pos;
+	int temp, loop, pos, total, x, y;
 	MapObj empty; //for push_back()
 
-	while (true)
+	Input >> total;
+
+	for (int i = 0; i < total; i++)
 	{
 		this->_obj.push_back(empty);
 		pos = (int)this->_obj.size() - 1;
@@ -170,12 +140,6 @@ void Map::LoadObj(string file)
 		//is object hidden? 1 = true, 0 = false
 		Input >> temp;
 		this->_obj[pos].Hidden = (temp > 0 ? true : false);
-
-		//end of reading in objects
-		if (Input.eof())
-		{
-			break;
-		}
 	}
 
 	Input.close();
@@ -206,45 +170,16 @@ void Map::LoadTiles(string file)
 	Input.close();
 }
 
-void Map::SetWalkable(int x, int y, Walkable walkable)
+bool Map::IsCollidable(int x, int y)
 {
-	this->_walkable[x][y] = walkable;
-}
-
-bool Map::IsWalkable(int x, int y)
-{
-	//test map boundaries, return false if over
-	if ((x < 0) || (y < 0) || (x >= this->_width) || (y >= this->_height))
+	for (int i = 0; i < this->_obj.size(); i++)
 	{
-		return false;
-	}
-	return this->_walkable[x][y].self; //tile is walkable
-}
-
-bool Map::IsWalkable(int x, int y, string side)
-{
-	//testing map boundary
-	if ((x < 0) || (y < 0) || (x >= this->_width) || (y >= this->_height))
-	{
-		return false;
-	}
-
-	//isn't over boundaries, return side
-	if (side == "up") {
-		return this->_walkable[x][y].up;
-	}
-	else if (side == "down") {
-		return this->_walkable[x][y].down;
-	}
-	else if (side == "left") {
-		return this->_walkable[x][y].left;
-	}
-	else if (side == "right") {
-		return this->_walkable[x][y].right;
-	}
-	else { //all else fails, return self
-		return this->_walkable[x][y].self;
-	}
+		if ((this->_obj[i].coords["x"] == x) && (this->_obj[i].coords["y"] == y))
+		{
+			cout << "Collision." << endl;
+			return this->_obj[i].Collidable;
+		}
+	} 
 }
 
 void Map::SetPlayer(int x, int y, Player* player)

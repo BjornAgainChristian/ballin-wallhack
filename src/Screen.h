@@ -19,7 +19,7 @@ class Screen
 	void DrawIMG(SDL_Surface *img, int x, int y, int width, int height, int x2, int y2); //blit portion
 	void DrawBackground(); //black background (layer 0)
 	void DrawMap(); //draw maptiles (layer 1)
-	void DrawSprites(); //draw sprites (layer 2)
+	void DrawObjects(int x_trim, int y_trim, int x_start, int y_start, vector<SDL_Surface*> tiles_render); //draw objects (layer 2)
 	
 
 	void DrawScene();

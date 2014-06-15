@@ -65,8 +65,7 @@ void Screen::DrawBackground()
 void Screen::DrawMap()
 {
 	Coords PlayerPos = _mainPlayer->GetPosition();
-	vector<MapTile> tiles = _map->GetMapTile();
-	vector<MapObj> objects = _map->GetMapObj(); //import tiles and objects from _map
+	vector<MapTile> tiles = _map->GetMapTile(); 
 
 	int x_start, y_start, x_trim, y_trim;
 	x_trim = y_trim = 0; //start with no offsets, set later
@@ -120,18 +119,37 @@ void Screen::DrawMap()
 
 	//draw test sprite location
 	DrawIMG(_temp, PlayerPos["x"] - x_trim, PlayerPos["y"] - y_trim);
+
+//	cout << "PlayerPos x/y: " << PlayerPos["x"] << " " << PlayerPos["y"] << endl;
+
+	//now draw the objects in layer2
+	DrawObjects(x_trim, y_trim, x_start, y_start, tiles_render);
 }
 
-void Screen::DrawSprites()
+//seperated for a bit of readability/bugtesting
+void Screen::DrawObjects(int x_trim, int y_trim, int x_start, int y_start, vector<SDL_Surface*> tiles_render)
 {
+	Coords PlayerPos = _mainPlayer->GetPosition();
+	vector<MapObj> objects = _map->GetMapObj(); 
+	SDL_Surface* render;
 
+	for (int i = 0; i < objects.size(); i++)
+	{
+		if ((objects[i].coords["x"] >= x_start) && (objects[i].coords["x"] <= x_start + SCREEN_HARDCODE_WIDTH + TILE_WIDTH))
+		{
+			if ((objects[i].coords["y"] >= y_start) && (objects[i].coords["y"] <= y_start + SCREEN_HARDCODE_HEIGHT + TILE_HEIGHT))
+			{ 
+				render = tiles_render[objects[i].Frames[0]];
+				DrawIMG(render, objects[i].coords["x"] - x_trim, objects[i].coords["y"] - y_trim);
+			}
+		} 		
+	}
 }
 
 void Screen::DrawScene()
 {
 	this->DrawBackground();
 	this->DrawMap();
-	this->DrawSprites();
 
 	SDL_Flip(_screen);
 }
@@ -141,6 +159,7 @@ void Screen::HandleKeys()
 	Uint8* keys;
 	keys = SDL_GetKeyState(NULL);
 	Coords PlayerPos = _mainPlayer->GetPosition();
+	vector<MapObj> objects = _map->GetMapObj(); //do find() for x and y values for collision?
 	int tileX, tileY; //for finding nearest tile for colliding
 
 	//if not divisble by 32, subtract remainder to find nearest tile to the left/top
@@ -185,35 +204,28 @@ void Screen::HandleKeys()
 	}
 	if (keys[SDLK_UP])
 	{
-		if (_map->IsWalkable(tileX, tileY, "up"))
-		{
-			_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"] - 12);			
-		}
+		_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"] - 12);			
 	} 
 	if (keys[SDLK_DOWN])
 	{
-		if (_map->IsWalkable(tileX, tileY, "down"))
-		{
-			_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"] + 12);
-		}
+		_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"] + 12);
 	}
 	if (keys[SDLK_LEFT])
 	{
-		if (_map->IsWalkable(tileX, tileY, "left"))
-		{
-			_mainPlayer->SetPosition(PlayerPos["x"] - 12, PlayerPos["y"]);
-		}
+		_mainPlayer->SetPosition(PlayerPos["x"] - 12, PlayerPos["y"]);
 	} 
 	if (keys[SDLK_RIGHT])
 	{
-		if (_map->IsWalkable(tileX, tileY, "right"))
-		{
-			_mainPlayer->SetPosition(PlayerPos["x"] + 12, PlayerPos["y"]);
-		}
+		_mainPlayer->SetPosition(PlayerPos["x"] + 12, PlayerPos["y"]);
+	}
+	if (keys[SDLK_l])
+	{
+		//Debugging aid for watching the console
+		cout << "--Mark--" << endl;
 	}
 
 	PlayerPos = _mainPlayer->GetPosition();
-	//change bounds
+	//change bounds to keep player from sliding off the map
 	if (PlayerPos["x"] < 0)
 	{
 		PlayerPos["x"] = 0;
@@ -236,6 +248,7 @@ void Screen::HandleKeys()
 void Screen::TestLoop()
 {
 	DrawScene();
+
 	HandleKeys();
 	SDL_Delay(33);
 }
