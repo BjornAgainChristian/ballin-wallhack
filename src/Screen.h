@@ -8,6 +8,8 @@
 #include "Map.h"
 #include "Player.h"
 
+//#include "SDL_Collide.h"
+
 
 class Screen
 {
@@ -21,6 +23,7 @@ class Screen
 	void DrawMap(); //draw maptiles (layer 1)
 	void DrawObjects(int x_trim, int y_trim, int x_start, int y_start, vector<SDL_Surface*> tiles_render); //draw objects (layer 2)
 	
+	void Collide(); //run collision tests
 
 	void DrawScene();
 
@@ -37,6 +40,7 @@ class Screen
 
 	Map* _map;
 	Player* _mainPlayer;
+	vector<MapObj> _collisions;
 
 };
 

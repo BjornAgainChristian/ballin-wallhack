@@ -72,6 +72,9 @@ void Screen::DrawMap()
 	SDL_Surface *render; //render target
 	vector<SDL_Surface*> tiles_render = _map->GetSDLTiles();
 
+	//update the colliding objects and positions prior to render
+	Collide();
+
 	//for rendering tiles to the left and top of where the player is located
 	//the +1 /2 on these ensures tiles are rendered 1 past the boarders for clipped tiles
 	x_start = PlayerPos["x"] - ((SCREEN_HARDCODE_WIDTH / 2) + TILE_WIDTH);
@@ -146,6 +149,14 @@ void Screen::DrawObjects(int x_trim, int y_trim, int x_start, int y_start, vecto
 	}
 }
 
+void Screen::Collide()
+{
+	vector<MapObj> objects = _map->GetMapObj();
+
+	//Run collisions, if true then reset player coords to outside of collision
+	
+}
+
 void Screen::DrawScene()
 {
 	this->DrawBackground();
@@ -159,7 +170,6 @@ void Screen::HandleKeys()
 	Uint8* keys;
 	keys = SDL_GetKeyState(NULL);
 	Coords PlayerPos = _mainPlayer->GetPosition();
-	vector<MapObj> objects = _map->GetMapObj(); //do find() for x and y values for collision?
 	int tileX, tileY; //for finding nearest tile for colliding
 
 	SDL_Event event;
@@ -172,6 +182,10 @@ void Screen::HandleKeys()
 	} 
 
 	if (keys[SDLK_ESCAPE])	
+	{
+		Quit = true;
+	}
+	if (keys[SDLK_q])
 	{
 		Quit = true;
 	}
@@ -203,19 +217,21 @@ void Screen::HandleKeys()
 	{
 		PlayerPos["x"] = 0;
 	}
-	if (PlayerPos["x"] > _map->GetWidth())
+	if (PlayerPos["x"] > _map->GetWidth() - TILE_WIDTH)
 	{
-		PlayerPos["x"] = _map->GetWidth();
+		PlayerPos["x"] = _map->GetWidth() - TILE_WIDTH;
 	}
 	if (PlayerPos["y"] < 0)
 	{
 		PlayerPos["y"] = 0;
 	}
-	if (PlayerPos["y"] > _map->GetWidth())
+	if (PlayerPos["y"] > _map->GetHeight() - TILE_HEIGHT)
 	{
-		PlayerPos["y"] = _map->GetWidth();
+		PlayerPos["y"] = _map->GetHeight() - TILE_HEIGHT;
 	}
 	_mainPlayer->SetPosition(PlayerPos["x"], PlayerPos["y"]);
+	//cout << "Player x/y: " << PlayerPos["x"] << ", " << PlayerPos["y"] << endl;
+
 }
 
 void Screen::TestLoop()

@@ -3,13 +3,15 @@ MAIN = 	src/Main.o\
 	src/Player.o\
 	src/Screen.o
 
-UTILS = src/utils/genmap_test.o
+BIGMAP 	= src/utils/genmap_test.o
+SMALLMAP= src/utils/genmap_small_test.o
 
 all: $(MAIN)
 	g++ -o client $(MAIN) -Wall -O2 -lSDL -lSDL_image -lSDL_mixer
 
-utils: $(UTILS)
-	g++ -o src/utils/Generate_Test_Map $(UTILS)
+utils: $(BIGMAP) $(SMALLMAP)
+	g++ -o src/utils/Generate_Test_Map $(BIGMAP)
+	g++ -o src/utils/Generate_Small_Map $(SMALLMAP)
 
 .PHONY: clean cleanall
 
