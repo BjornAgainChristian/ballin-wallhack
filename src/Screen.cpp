@@ -102,7 +102,7 @@ void Screen::DrawMap()
 	if (PlayerPos["y"] > SCREEN_HARDCODE_HEIGHT / 2)
 	{
 		y_trim = PlayerPos["y"] - SCREEN_HARDCODE_HEIGHT / 2;
-	}
+	} 
 
 	//loop through tiles and find the ones matching the coords x/y and render
 	for (int i = 0; i < tiles.size(); i++)
@@ -161,33 +161,6 @@ void Screen::HandleKeys()
 	Coords PlayerPos = _mainPlayer->GetPosition();
 	vector<MapObj> objects = _map->GetMapObj(); //do find() for x and y values for collision?
 	int tileX, tileY; //for finding nearest tile for colliding
-
-	//if not divisble by 32, subtract remainder to find nearest tile to the left/top
-	tileX = PlayerPos["x"] % TILE_WIDTH;
-	tileY = PlayerPos["y"] % TILE_HEIGHT;
-	if ((tileX > 0) && (PlayerPos["x"] < TILE_WIDTH))
-	{
-		tileX = TILE_WIDTH;
-	}
-	else if (tileX > 0)
-	{
-		tileX = PlayerPos["x"] - tileX;
-	}
-	else {
-		tileX = PlayerPos["x"];
-	}
-
-	if ((tileY > 0) && (PlayerPos["y"] < TILE_HEIGHT))
-	{
-		tileY = TILE_HEIGHT;
-	}
-	else if (tileY > 0)
-	{
-		tileY = PlayerPos["y"] - tileY;
-	}
-	else {
-		tileY = PlayerPos["y"];
-	} 
 
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
