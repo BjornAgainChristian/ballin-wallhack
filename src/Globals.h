@@ -11,6 +11,9 @@
 
 using namespace std;
 
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+
 const int SCREEN_HARDCODE_WIDTH 	= 800;
 const int SCREEN_HARDCODE_HEIGHT 	= 600;
 const int SCREEN_HARDCODE_BPP		= 32;
@@ -30,6 +33,14 @@ enum {
 	LEFT,
 	RIGHT
 };
+
+typedef struct {
+	vector<SDL_Surface*> Left;
+	vector<SDL_Surface*> Right;
+	vector<SDL_Surface*> Up;
+	vector<SDL_Surface*> Down;
+	SDL_Surface* Static;
+} Sprite;
 
 typedef map<string, int> Coords; //used for player coords
 

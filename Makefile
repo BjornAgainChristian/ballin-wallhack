@@ -18,3 +18,7 @@ utils: $(BIGMAP) $(SMALLMAP)
 clean:
 	find src/ | egrep '(\.o|\.so)$\' | xargs rm
 	rm client
+
+cleanutils:
+	rm src/utils/Generate_Test_Map
+	rm src/utils/Generate_Small_Map

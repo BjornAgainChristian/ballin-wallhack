@@ -2,11 +2,12 @@
 
 Screen::Screen(Map map, Player mainPlayer)
 {
-	_temp = IMG_Load("data/tiles/29.png"); //TODO remove after static test
+//	_temp = IMG_Load("data/tiles/29.png"); //TODO remove after static test
 //	_temp = IMG_Load("data/player_Male/0.png");
 
 	_map = &map;
 	_mainPlayer = &mainPlayer;
+	_animPlayer = _mainPlayer->GetAnimations();
 
 	Quit = false;
 
@@ -121,7 +122,7 @@ void Screen::DrawMap()
 	}
 
 	//draw test sprite location
-	DrawIMG(_temp, PlayerPos["x"] - x_trim, PlayerPos["y"] - y_trim);
+	DrawIMG(_animPlayer.Static, PlayerPos["x"] - x_trim, PlayerPos["y"] - y_trim);
 
 //	cout << "PlayerPos x/y: " << PlayerPos["x"] << " " << PlayerPos["y"] << endl;
 
@@ -170,7 +171,6 @@ void Screen::HandleKeys()
 	Uint8* keys;
 	keys = SDL_GetKeyState(NULL);
 	Coords PlayerPos = _mainPlayer->GetPosition();
-	int tileX, tileY; //for finding nearest tile for colliding
 
 	SDL_Event event;
 	while (SDL_PollEvent(&event))

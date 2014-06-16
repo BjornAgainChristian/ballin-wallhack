@@ -2,14 +2,12 @@
 #define _SCREEN_H_
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #include <vector>
 
 #include "Globals.h"
 #include "Map.h"
 #include "Player.h"
-
-//#include "SDL_Collide.h"
-
 
 class Screen
 {
@@ -40,6 +38,7 @@ class Screen
 
 	Map* _map;
 	Player* _mainPlayer;
+	Sprite _animPlayer;
 	vector<MapObj> _collisions;
 
 };

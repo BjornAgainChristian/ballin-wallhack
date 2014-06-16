@@ -1,0 +1,3 @@
+
+6/15/14
+Ripped out old collision system (kept walkable directions from specific tiles, ended up being a huge hassle when using for object collision detection so just wrote in better boundary code and adding bounding box collision for sprites).
